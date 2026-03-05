@@ -1,0 +1,97 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [new-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. v0.2.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          # Strip leading 'v' for formula version field
+          echo "tag=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "number=${VERSION#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Download SHA256SUMS
+        run: |
+          curl -fsSL "https://github.com/romerox3/volra/releases/download/${{ steps.version.outputs.tag }}/SHA256SUMS" \
+            -o SHA256SUMS
+
+      - name: Extract checksums
+        id: sums
+        run: |
+          echo "darwin_arm64=$(grep 'volra-darwin-arm64' SHA256SUMS | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "linux_amd64=$(grep 'volra-linux-amd64' SHA256SUMS | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "linux_arm64=$(grep 'volra-linux-arm64' SHA256SUMS | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+
+      - name: Update formula
+        run: |
+          python3 << 'SCRIPT'
+          import re
+
+          tag = "${{ steps.version.outputs.tag }}"
+          version = "${{ steps.version.outputs.number }}"
+          darwin_arm64 = "${{ steps.sums.outputs.darwin_arm64 }}"
+          linux_amd64 = "${{ steps.sums.outputs.linux_amd64 }}"
+          linux_arm64 = "${{ steps.sums.outputs.linux_arm64 }}"
+
+          with open("Formula/volra.rb", "r") as f:
+              content = f.read()
+
+          # Update version
+          content = re.sub(
+              r'version ".*?"',
+              f'version "{version}"',
+              content,
+          )
+
+          # Update URLs (replace old tag with new tag)
+          content = re.sub(
+              r'(releases/download/)[^/]+/',
+              rf'\g<1>{tag}/',
+              content,
+          )
+
+          # Update sha256 values in order: darwin-arm64, linux-amd64, linux-arm64
+          sha_pattern = r'sha256 "[0-9a-f]{64}"'
+          matches = list(re.finditer(sha_pattern, content))
+          checksums = [darwin_arm64, linux_amd64, linux_arm64]
+
+          for match, checksum in zip(reversed(matches), reversed(checksums)):
+              content = content[:match.start()] + f'sha256 "{checksum}"' + content[match.end():]
+
+          with open("Formula/volra.rb", "w") as f:
+              f.write(content)
+
+          print(f"Updated formula to {tag}")
+          print(f"  darwin-arm64: {darwin_arm64}")
+          print(f"  linux-amd64:  {linux_amd64}")
+          print(f"  linux-arm64:  {linux_arm64}")
+          SCRIPT
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/volra.rb
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "feat: update volra to ${{ steps.version.outputs.tag }}"
+          git push
