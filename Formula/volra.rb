@@ -1,13 +1,13 @@
 class Volra < Formula
   desc "Own your agent infrastructure — deploy AI agents with monitoring"
   homepage "https://github.com/romerox3/volra"
-  version "0.3.0"
+  version "0.3.1"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/romerox3/volra/releases/download/v0.3.0/volra-darwin-arm64"
-      sha256 "3a131bd8a08f234c86d74ff809ee0fbc9e96eab72b1599f42b0f8000454a171e"
+      url "https://github.com/romerox3/volra/releases/download/v0.3.1/volra-darwin-arm64"
+      sha256 "ae2be89721474bcde207e260c04e4767f0232d8ee31da1106a422e14a7c21ab7"
 
       def install
         bin.install "volra-darwin-arm64" => "volra"
@@ -17,8 +17,8 @@ class Volra < Formula
 
   on_linux do
     on_intel do
-      url "https://github.com/romerox3/volra/releases/download/v0.3.0/volra-linux-amd64"
-      sha256 "358301c8afa467f7c68550c714e42399ee0b8820f8a6afe3248a7c7eb318787d"
+      url "https://github.com/romerox3/volra/releases/download/v0.3.1/volra-linux-amd64"
+      sha256 "097647a5490e768497b257729364ccf2ff6b1cc2d2df52d2bc115f760fe4a066"
 
       def install
         bin.install "volra-linux-amd64" => "volra"
@@ -26,8 +26,8 @@ class Volra < Formula
     end
 
     on_arm do
-      url "https://github.com/romerox3/volra/releases/download/v0.3.0/volra-linux-arm64"
-      sha256 "6e96c474b20be39d054dc8584caf6a8b0332427f4e10ae0f6a805b487a89b18b"
+      url "https://github.com/romerox3/volra/releases/download/v0.3.1/volra-linux-arm64"
+      sha256 "addc41391f466b965906762e01c67a73e30b630af83e7172d0a33832e33b0a70"
 
       def install
         bin.install "volra-linux-arm64" => "volra"
