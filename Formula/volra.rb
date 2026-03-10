@@ -5,21 +5,21 @@
 class Volra < Formula
   desc "Deploy and monitor AI agents on your own servers"
   homepage "https://github.com/romerox3/volra"
-  version "1.0.4"
+  version "1.0.5"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/romerox3/volra/releases/download/v1.0.4/volra-1.0.4-darwin-amd64.tar.gz"
-      sha256 "5cc44bfce78d0279a61983e2f1c2864aa34a663339aa681fde406890e359f19a"
+      url "https://github.com/romerox3/volra/releases/download/v1.0.5/volra-1.0.5-darwin-amd64.tar.gz"
+      sha256 "3a005ea3345db5250ef975bd53af2798b58fcad0b4f27f3849187c92c5c5c47d"
 
       define_method(:install) do
         bin.install "volra"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/romerox3/volra/releases/download/v1.0.4/volra-1.0.4-darwin-arm64.tar.gz"
-      sha256 "5ab66e2067069a070e2b8c8bb9d9bd25b13282636fc300a99dc3dcc0cccf4101"
+      url "https://github.com/romerox3/volra/releases/download/v1.0.5/volra-1.0.5-darwin-arm64.tar.gz"
+      sha256 "3cded1b5a80c11955459c163fbdc6dcc3d99692ab0aa06f5cf3b0eb3a06b525f"
 
       define_method(:install) do
         bin.install "volra"
@@ -29,15 +29,15 @@ class Volra < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/romerox3/volra/releases/download/v1.0.4/volra-1.0.4-linux-amd64.tar.gz"
-      sha256 "6e983194f9f1ad1c5a6e1e621d7eaaa5db171675fd814a6bec66c61579aab31c"
+      url "https://github.com/romerox3/volra/releases/download/v1.0.5/volra-1.0.5-linux-amd64.tar.gz"
+      sha256 "499a4cbb65e60a631f39f7b9f092b87772564e37a1bd589f2d1430b0ea89a340"
       define_method(:install) do
         bin.install "volra"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/romerox3/volra/releases/download/v1.0.4/volra-1.0.4-linux-arm64.tar.gz"
-      sha256 "bbd46d5404fec851aad0ba4e84af8ef0baa4e4f1441aaf415865d0f8a889bae9"
+      url "https://github.com/romerox3/volra/releases/download/v1.0.5/volra-1.0.5-linux-arm64.tar.gz"
+      sha256 "0ed194e6010b4864c69989e354a13b85c585bbdea7f6fdb1220e1ada9836de5b"
       define_method(:install) do
         bin.install "volra"
       end
